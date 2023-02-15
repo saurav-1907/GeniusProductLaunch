@@ -1,0 +1,12 @@
+{
+    "search-wizzy": {
+        "general": {
+            "mainMenuItemGeneral": "Search Wizzy",
+            "descriptionTextModule": "Display search wizzy list"
+        },
+        "list": {
+            "importProductBtnTitle": "Import all products",
+            "importProductBtnLabel": "Import Wizzy"
+        }
+    }
+}

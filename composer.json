@@ -1,0 +1,41 @@
+{
+    "name": "ict/genius-product-launch",
+    "description": "GeniusProductLaunch",
+    "type": "shopware-platform-plugin",
+    "version": "v1.0.0",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "GeniusProductLaunch\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name" : "iCreateivetechnologies"
+        }
+    ],
+    "require": {
+        "shopware/core": "^6.4",
+        "shopware/storefront": "^6.4",
+        "shopware/administration": "^6.4"
+    },
+    "extra": {
+        "shopware-plugin-class": "GeniusProductLaunch\\GeniusProductLaunch",
+        "label": {
+            "de-DE": "E-Mail zur Produkteinführung an Newsletter-Abonnenten",
+            "en-GB": "Product Launch email to newsletter subscribers"
+        },
+        "description": {
+            "de-DE": "Halten Sie die Shop-Benutzer über Ihre neuen Produkte auf dem Laufenden",
+            "en-GB": "Keep the Shop users updated about your new products"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.icreativetechnologies.com",
+            "en-GB": "https://www.icreativetechnologies.com"
+        },
+        "supportLink": {
+            "de-DE": "https://support.icreativetechnologies.com",
+            "en-GB": "https://support.icreativetechnologies.com"
+        }
+    }
+}
