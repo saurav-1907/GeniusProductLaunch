@@ -41,15 +41,13 @@ class ReleaseProductSentMailController extends AbstractController
      */
     private $releaseProductRepository;
 
-    public function __construct
-    (
+    public function __construct(
         EntityRepositoryInterface $newsletterRecipientRepository,
         EntityRepositoryInterface $productsRepository,
         EntityRepositoryInterface $salesChannelRepository,
         EmailService     $emailService,
         EntityRepositoryInterface $releaseProductRepository
-    )
-    {
+    ) {
         $this->newsletterRecipientRepository = $newsletterRecipientRepository;
         $this->productsRepository = $productsRepository;
         $this->salesChannelRepository = $salesChannelRepository;
@@ -67,7 +65,7 @@ class ReleaseProductSentMailController extends AbstractController
     public function releaseProduct(Context $context): JsonResponse
     {
         $subscriberCustomers = $this->getSubscribeCustomers($context);
-        $products = $this->getAllProduct ($context);
+        $products = $this->getAllProduct($context);
         foreach ($subscriberCustomers as $subscriberCustomer) {
             $customerIds[] = $subscriberCustomer->getId();
             $salesChannelId = $subscriberCustomer->getSalesChannelId();
