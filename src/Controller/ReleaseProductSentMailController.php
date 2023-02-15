@@ -2,7 +2,6 @@
 
 namespace GeniusProductLaunch\Controller;
 
-
 use GeniusProductLaunch\Service\EmailService;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Mail\Service\AbstractMailService;
@@ -21,7 +20,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 /**
  * @RouteScope(scopes={"api"})
@@ -43,10 +41,23 @@ class ReleaseProductSentMailController extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $productsRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
     private $salesChannelRepository;
+
     private AbstractMailService $mailService;
     private EmailService $emailService;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
     private $mailTemplateRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
     private $releaseProductRepository;
 
     public function __construct
@@ -77,8 +88,6 @@ class ReleaseProductSentMailController extends AbstractController
 
     public function releaseProduct(Context $context): JsonResponse
     {
-
-
         $subscriberCustomers = $this->getSubscribeCustomers($context);
         $products = $this->getAllProduct ($context);
         foreach ($subscriberCustomers as $subscriberCustomer) {
@@ -99,16 +108,10 @@ class ReleaseProductSentMailController extends AbstractController
             foreach ($releaseProductInfoData as $email) {
                 foreach ($products as $product) {
                     $productId = $product->getId();
-
                     $releaseProductDetails['productData'] = $product;
-
-
-
                     $uniquecustomerIds = array_unique($customerIds);
                     $checkLog = $this->checkEntryExistOrNot($productId, $context);
                     $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
-//        dd($releaseProductInfoData);
-//                    dd($email);
                     $this->emailService->sendEmail($email, $product, Context::createDefaultContext());
                     $this->releaseProductRepository->upsert([
                         [
@@ -121,10 +124,7 @@ class ReleaseProductSentMailController extends AbstractController
                 }
             }
         }
-       // dd($releaseProductInfoData);
-
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
-
     }
     private function getSubscribeCustomers($context):array
     {
@@ -156,6 +156,3 @@ class ReleaseProductSentMailController extends AbstractController
         return $this->releaseProductRepository->search($criteria, $context);
     }
 }
-
-
-

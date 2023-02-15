@@ -53,11 +53,12 @@ class GeniusProductLaunch extends Plugin
     public function install(InstallContext $installContext): void
     {
         parent::install($installContext);
-        $this->release_product_email_template($installContext);
+        $this->releaseProductEmailRemplate($installContext);
     }
 
     //install email template
-    public function release_product_email_template(InstallContext $installContext){
+    public function releaseProductEmailRemplate(InstallContext $installContext)
+    {
         /**
          * @var EntityRepositoryInterface $mailTemplateTypeRepository
          */
@@ -107,7 +108,6 @@ class GeniusProductLaunch extends Plugin
             $mailTemplateTypeRepository->create($mailTemplateType, $installContext->getContext());
             $mailTemplateRepository->create($mailTemplate, $installContext->getContext());
         } catch (UniqueConstraintViolationException $exception) {
-
         }
     }
 
@@ -120,34 +120,27 @@ class GeniusProductLaunch extends Plugin
 
         $connection = $this->container->get(Connection::class);
         $connection->executeStatement('DROP TABLE IF EXISTS `release_product`');
-//        $connection->executeStatement(
-//            'DELETE FROM system_config WHERE configuration_key LIKE :domain',
-//            [
-//                'domain' => '%productLaunch.settings%',
-//            ]
-//        );
+        $connection->executeStatement(
+            'DELETE FROM system_config WHERE configuration_key LIKE :domain',
+            [
+                'domain' => '%productLaunch.settings%',
+            ]
+        );
         /** @var EntityRepositoryInterface $mailTemplateTypeRepository */
         $mailTemplateTypeRepository = $this->container->get('mail_template_type.repository');
         /** @var EntityRepositoryInterface $mailTemplateRepository */
         $mailTemplateRepository = $this->container->get('mail_template.repository');
 
         /** @var MailTemplateTypeEntity $myCustomMailTemplateType */
-        $myCustomMailTemplateType = $mailTemplateTypeRepository->search(
-            (new Criteria())
-                ->addFilter(new EqualsFilter('technicalName', self::TEMPLATE_TYPE_TECHNICAL_NAME)),$uninstallContext->getContext())->first();
+        $myCustomMailTemplateType = $mailTemplateTypeRepository->search((new Criteria())->addFilter(new EqualsFilter('technicalName', self::TEMPLATE_TYPE_TECHNICAL_NAME)), $uninstallContext->getContext())->first();
 
-        $mailTemplateIds = $mailTemplateRepository->searchIds((new Criteria())
-            ->addFilter(new EqualsFilter('mailTemplateTypeId', $myCustomMailTemplateType->getId())),$uninstallContext->getContext())->getIds();
+        $mailTemplateIds = $mailTemplateRepository->searchIds((new Criteria())->addFilter(new EqualsFilter('mailTemplateTypeId', $myCustomMailTemplateType->getId())), $uninstallContext->getContext())->getIds();
 
         $ids = array_map(static function ($id) {
             return ['id' => $id];
         }, $mailTemplateIds);
 
         $mailTemplateRepository->delete($ids, $uninstallContext->getContext());
-
-        $mailTemplateTypeRepository->delete([
-            ['id' => $myCustomMailTemplateType->getId()]
-        ], $uninstallContext->getContext());
+        $mailTemplateTypeRepository->delete([['id' => $myCustomMailTemplateType->getId()]], $uninstallContext->getContext());
     }
-
 }

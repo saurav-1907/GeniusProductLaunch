@@ -29,8 +29,7 @@ class NewProductSentMailTaskHandler extends ScheduledTaskHandler
         EntityRepositoryInterface $scheduledTaskRepository,
         releaseProductSentMailController $releaseProductSentMailController,
         SystemConfigService $systemConfigService
-    )
-    {
+    ) {
         $this->scheduledTaskRepository = $scheduledTaskRepository;
         $this->releaseProductSentMailController = $releaseProductSentMailController;
         $this->systemConfigService = $systemConfigService;
