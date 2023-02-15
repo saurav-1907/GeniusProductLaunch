@@ -105,7 +105,7 @@ class EmailService
         $htmlCustomContentPlain = $mailTemplate->getTranslation('subject');
         $replaceHtmlCustomSubject = str_replace('{firstName}', $firstname, $htmlCustomContentPlain);
         $replaceHtmlCustomSubject = str_replace('{lastName}', $lastName, $replaceHtmlCustomSubject);
-        $replaceHtmlCustomSubject = str_replace('{salesChannelName}', $salesChannelName ,$replaceHtmlCustomSubject);
+        $replaceHtmlCustomSubject = str_replace('{salesChannelName}', $salesChannelName, $replaceHtmlCustomSubject);
 
         //check condition mail translation is null or not
         if ($mailTranslation === null) {
@@ -123,7 +123,7 @@ class EmailService
             $data->set('recipients', [$email => $email]);
             $data->set('salesChannelId', $salesChannelId);
                 $this->mailService->send($data->all(), $context);
-           } catch (\Exception $e) {
+        } catch (\Exception $e) {
                 $this->logger->error(
                     "Could not send mail:\n"
                     . $e->getMessage() . "\n"
@@ -131,7 +131,7 @@ class EmailService
                     . "Template data: \n"
                     . json_encode($data->all()) . "\n"
                 );
-           }
+        }
     }
     //getting mail template
     private function getMailTemplate($mailTemplateName, $context): ?MailTemplateEntity

@@ -3,21 +3,14 @@
 namespace GeniusProductLaunch\Controller;
 
 use GeniusProductLaunch\Service\EmailService;
-use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Mail\Service\AbstractMailService;
-use Shopware\Core\Content\MailTemplate\MailTemplateEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\System\SalesChannel\Context\AbstractSalesChannelContextFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,12 +24,6 @@ class ReleaseProductSentMailController extends AbstractController
      * @var EntityRepositoryInterface
      */
     private $newsletterRecipientRepository;
-
-    /**
-     * @var SystemConfigService
-     */
-    private $systemConfigService;
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -47,13 +34,7 @@ class ReleaseProductSentMailController extends AbstractController
      */
     private $salesChannelRepository;
 
-    private AbstractMailService $mailService;
     private EmailService $emailService;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mailTemplateRepository;
 
     /**
      * @var EntityRepositoryInterface
@@ -63,27 +44,24 @@ class ReleaseProductSentMailController extends AbstractController
     public function __construct
     (
         EntityRepositoryInterface $newsletterRecipientRepository,
-        SystemConfigService $systemConfigService,
         EntityRepositoryInterface $productsRepository,
         EntityRepositoryInterface $salesChannelRepository,
-        AbstractMailService        $mailService,
         EmailService     $emailService,
-        EntityRepositoryInterface $mailTemplateRepository,
         EntityRepositoryInterface $releaseProductRepository
     )
     {
         $this->newsletterRecipientRepository = $newsletterRecipientRepository;
-        $this->systemConfigService = $systemConfigService;
         $this->productsRepository = $productsRepository;
         $this->salesChannelRepository = $salesChannelRepository;
-        $this->mailService = $mailService;
         $this->emailService = $emailService;
-        $this->mailTemplateRepository = $mailTemplateRepository;
         $this->releaseProductRepository = $releaseProductRepository;
     }
+
     /**
      * @Route("/api/search-wizzy/releaseProduct",
      *     name="api.action.search.wizzy.release.product.cron", methods={"GET"})
+     * @param Context $context
+     * @return JsonResponse
      */
 
     public function releaseProduct(Context $context): JsonResponse
@@ -94,6 +72,7 @@ class ReleaseProductSentMailController extends AbstractController
             $customerIds[] = $subscriberCustomer->getId();
             $salesChannelId = $subscriberCustomer->getSalesChannelId();
             $salesChannelNames = $this->getSalesChannelName($salesChannelId, $context);
+            $salesChannelName = '';
             foreach ($salesChannelNames as $salesChannelName) {
                 $salesChannelName = $salesChannelName->getName();
             }

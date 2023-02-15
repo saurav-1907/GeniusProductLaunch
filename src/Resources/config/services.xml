@@ -35,12 +35,9 @@
 
         <service id="GeniusProductLaunch\Controller\ReleaseProductSentMailController" public="true">
             <argument type="service" id="newsletter_recipient.repository"/>
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="product.repository"/>
             <argument type="service" id="sales_channel.repository"/>
-            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
             <argument type="service" id="GeniusProductLaunch\Service\EmailService" />
-            <argument type="service" id="mail_template.repository"/>
             <argument type="service" id="release_product.repository"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
