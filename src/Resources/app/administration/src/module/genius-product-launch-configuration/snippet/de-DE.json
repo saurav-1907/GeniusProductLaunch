@@ -1,0 +1,14 @@
+{
+    "genius-product-launch-configuration": {
+        "header": "GeniusProductLaunch",
+        "card": {
+            "selectTemplate": "Select MailTemplate",
+            "titleSaveSuccess": "Success",
+            "messageSaveSuccess": "Details saved successfully"
+        },
+        "general": {
+            "mainMenuItemGeneral": "GeniusProductLaunch",
+            "descriptionTextModule": "GeniusProductLaunch settings"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "search-wizzy": {
+        "general": {
+            "mainMenuItemGeneral": "Update Product Price",
+            "descriptionTextModule": "Display search wizzy list"
+        },
+        "list": {
+            "importProductBtnTitle": "Import all products",
+            "importProductBtnLabel": "Import Wizzy",
+            "ProductImportCronBtnLabel": "Product Import Cron"
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "genius-product-launch-configuration": {
+        "header": "GeniusProductLaunch",
+        "card": {
+            "selectTemplate": "Select MailTemplate",
+            "selectTime": "Select Time",
+            "mailTemplate": "MailTemplate",
+            "cronTime": "Select time for set cron",
+            "messageSaveSuccess": "Details saved successfully",
+            "selectActivate" : "Select general configrations",
+            "active" : "Active"
+        },
+        "frequency": {
+            "labelLastExecutionTime": "Last Execution"
+        },
+        "save": {
+            "errorTitle" : "Configuration could not save",
+            "success" : "Configuration is saved"
+        },
+        "general": {
+            "mainMenuItemGeneral": "GeniusProductLaunch",
+            "descriptionTextModule": "GeniusProductLaunch settings"
+        }
+    }
+}

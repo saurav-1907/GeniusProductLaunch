@@ -1,0 +1,120 @@
+{% block genius_product_launch_configuration %}
+    <sw-page class="genius-product-launch-configuration">
+
+        {% block genius_product_launch_configuration_header %}
+            <template #smart-bar-header>
+                <h2>
+                    {{ $tc('sw-settings.index.title') }}
+                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
+                    {{ $tc('genius-product-launch-configuration.header') }}
+                </h2>
+            </template>
+        {% endblock %}
+
+        {% block genius_product_launch_configuration_actions %}
+            <template #smart-bar-actions>
+                {% block genius_product_launch_configuration_actions_save %}
+                    <sw-button-process v-model="isSaveSuccessful"
+                                       class="sw-settings-login-registration__save-action"
+                                       variant="primary"
+                                       :isLoading="isLoading"
+                                       :disabled="isLoading || !acl.can('productLaunch.editor')"
+                                       @click="onSave">
+                        {{ $tc('global.default.save') }}
+                    </sw-button-process>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+        {% block genius_product_launch_configuration_content %}
+            <template #content>
+                {% block genius_product_launch_configuration_content_card %}
+                    <sw-card-view>
+                        {% block genius_product_launch_configuration_content_card_channel_config %}
+                            <sw-sales-channel-config v-model="config"
+                                                     ref="configComponent"
+                                                     domain="productLaunch.settings">
+
+                                {% block genius_product_launch_configuration_content_card_channel_config_sales_channel %}
+                                <template #select="{ onInput, selectedSalesChannelId }">
+                                    <sw-card :title="$tc('global.entities.sales_channel', 2)">
+                                        {% block genius_product_launch_configuration_content_card_channel_config_sales_channel_card_title %}
+                                            <sw-single-select v-model="selectedSalesChannelId"
+                                                              labelProperty="translated.name"
+                                                              valueProperty="id"
+                                                              :isLoading="isLoading"
+                                                              :options="salesChannels"
+                                                              :disabled="!acl.can('productLaunch.editor')"
+                                                              @change="onInput">
+                                            </sw-single-select>
+                                        {% endblock %}
+                                    </sw-card>
+                                </template>
+                                {% endblock %}
+
+                                {% block genius_product_launch_configuration_content_card_channel_config_cards %}
+                                    <template #content="{ actualConfigData, allConfigs, selectedSalesChannelId }">
+                                        <div v-if="actualConfigData">
+                                            <sw-card :title="$tc('genius-product-launch-configuration.card.selectActivate')">
+                                                <sw-container>
+                                                    <div class="switch-field">
+                                                        <sw-inherit-wrapper v-model="actualConfigData['productLaunch.settings.active']"
+                                                                            :inheritedValue="selectedSalesChannelId == null ? null : allConfigs['null']['productLaunch.settings.active']"
+                                                                            :customInheritationCheckFunction="checkTextFieldInheritance">
+                                                            <template #content="props">
+                                                                <sw-switch-field name="productLaunch.settings.active"
+                                                                                 :value="props.currentValue"
+                                                                                 :label="$tc('genius-product-launch-configuration.card.active')"
+                                                                                 @change="props.updateCurrentValue">
+                                                                </sw-switch-field>
+                                                            </template>
+                                                        </sw-inherit-wrapper>
+                                                    </div>
+
+                                                    <div class="select-field">
+                                                        <sw-inherit-wrapper v-model="actualConfigData['productLaunch.settings.mailTemplate']"
+                                                                            :inheritedValue="selectedSalesChannelId == null ? null : allConfigs['null']['productLaunch.settings.mailTemplate']"
+                                                                            :customInheritationCheckFunction="checkTextFieldInheritance"
+                                                                            :label="$tc('genius-product-launch-configuration.card.mailTemplate')">
+                                                            <template #content="props">
+                                                                <sw-single-select name="productLaunch.settings.mailTemplate"
+                                                                                  :options="mailTemplateOptions"
+                                                                                  labelProperty="name"
+                                                                                  valueProperty="name"
+                                                                                  :isInherited="props.isInherited"
+                                                                                  :value="props.currentValue"
+                                                                                  @change="props.updateCurrentValue"
+                                                                                  :disabled="props.isInherited || !acl.can('productLaunch.editor')">
+                                                                </sw-single-select>
+
+                                                            </template>
+                                                        </sw-inherit-wrapper>
+                                                    </div>
+
+                                                    <div class="select-field">
+                                                        <sw-inherit-wrapper v-model="actualConfigData['productLaunch.settings.mailTemplate']"
+                                                                            :inheritedValue="selectedSalesChannelId == null ? null : allConfigs['null']['productLaunch.settings.mailTemplate']"
+                                                                            :customInheritationCheckFunction="checkTextFieldInheritance"
+                                                                            :label="$tc('genius-product-launch-configuration.card.cronTime')">
+                                                            <template #content="props">
+                                                                <sw-datepicker dateType="datetime-local"
+                                                                               v-model="frquency.nextExecutionTime">
+                                                                </sw-datepicker>
+                                                            </template>
+                                                        </sw-inherit-wrapper>
+                                                    </div>
+                                                </sw-container>
+                                            </sw-card>
+                                        </div>
+                                    </template>
+                                {% endblock %}
+
+                            </sw-sales-channel-config>
+                        {% endblock %}
+                    </sw-card-view>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+    </sw-page>
+{% endblock %}

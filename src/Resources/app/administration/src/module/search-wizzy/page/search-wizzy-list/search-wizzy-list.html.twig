@@ -1,0 +1,15 @@
+{% block search_wizzy_list_page %}
+    <sw-page class="search-wizzy-list">
+        {#Cron Button#}
+        <template slot="content" >
+            <sw-card class="sw-settings-shipping-detail__condition_container">
+                <div class="collection-container">
+                    <div style="width:100%;"><h1>{{ $t('search-wizzy.list.importProductBtnTitle') }}</h1></div>
+                    <sw-button variant="primary" @click="releaseProduct">
+                        {{ $t('search-wizzy.list.ProductImportCronBtnLabel') }}
+                    </sw-button>
+                </div>
+            </sw-card>
+        </template>
+    </sw-page>
+{% endblock %}
