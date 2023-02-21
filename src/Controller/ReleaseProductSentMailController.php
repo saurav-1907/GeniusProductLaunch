@@ -81,16 +81,14 @@ class ReleaseProductSentMailController extends AbstractController
             $releaseProductDetails['lastName'] = $subscriberCustomer->getLastName();
             $releaseProductDetails['email'] = $subscriberCustomer->getEmail();
             $releaseProductInfoData[] = $releaseProductDetails;
-
         }
         foreach ($releaseProductInfoData as $email) {
             foreach ($products as $product) {
                 $productId = $product->getId();
-//                $releaseProductDetails['productData'] = $product;
-                $uniquecustomerIds = array_unique($customerIds);
-                $checkLog = $this->checkEntryExistOrNot($productId, $context);
-                $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
             }
+            $checkLog = $this->checkEntryExistOrNot($productId, $context);
+            $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
+            $uniquecustomerIds = array_unique($customerIds);
             $this->emailService->sendEmail($email, $products, Context::createDefaultContext());
             $this->releaseProductRepository->upsert([
                 [
