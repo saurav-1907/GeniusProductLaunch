@@ -35,42 +35,38 @@ class EmailService
 
     public function sendEmail($emailDetail, $productDetail, $context)
     {
-        //dd($releaseProductInfoData);
-//        dd($releaseProductInfoData);
         $mailTemplateName =  $this->systemConfigService->get('productLaunch.settings.mailTemplate');
+
         $mailTemplate = $this->getMailTemplate($mailTemplateName, $context);
         $mailTranslations = $mailTemplate->getTranslations();
         $mailTranslation = $mailTranslations->filter(function ($element) use ($context) {
             return $element->getLanguageId() === $context->getLanguageIdChain()['0'];
         })->first();
         $htmlCustomContent = $mailTranslation->getContentHtml();
-//        dd($productDetails);
         $replaceContent = "<div style='display: flex; flex-wrap: wrap'>";
-       // dd($releaseProductInfoData);
-        //foreach ($releaseProductInfoData as $productDetail) {
         $firstname = $emailDetail['firstName'];
         $lastName = $emailDetail['lastName'];
         $salesChannelName = $emailDetail['salesChannelName'];
         $email = $emailDetail['email'];
-//dd($productDetail);
+
         $salesChannelId = $emailDetail['salesChannelId'];
-        $productName = $productDetail->getTranslated()['name'];
-        $productNumber = $productDetail->getProductNumber();
-        $productDescription = $productDetail->getTranslated()['description'];
-        $productPrice = $productDetail->getPrice()->getElements();
-        $mediaData = $productDetail->getMedia();
-        $mediaUrl = '';
-        $grossPrice = 0 ;
-        foreach ($productPrice as $price) {
-            $grossPrice = $price->getGross();
-        }
-        foreach ($mediaData as $media) {
-            $mediaUrl = $media->getMedia()->getUrl();
-        }
-        $replacedProductName = str_replace(' ', '-', $productName);
-        $productURL = $_ENV['APP_URL']  . $replacedProductName. '/'. $productNumber;
-//            dd($productURL);
-        $replaceContent .= '
+        foreach ($productDetail as $productData) {
+            $productName = $productData->getTranslated()['name'];
+            $productNumber = $productData->getProductNumber();
+            $productDescription = $productData->getTranslated()['description'];
+            $productPrice = $productData->getPrice()->getElements();
+            $mediaData = $productData->getMedia();
+            $mediaUrl = '';
+            $grossPrice = 0 ;
+            foreach ($productPrice as $price) {
+                $grossPrice = $price->getGross();
+            }
+            foreach ($mediaData as $media) {
+                $mediaUrl = $media->getMedia()->getUrl();
+            }
+            $replacedProductName = str_replace(' ', '-', $productName);
+            $productURL = $_ENV['APP_URL'] .'/'. $replacedProductName. '/'. $productNumber;
+            $replaceContent .= '
         <div class="cms-listing-col" style="flex: 0 0 25%;max-width: 25%; padding:0 8px; box-sizing: border-box;">
             <a href='.$productURL.' style="text-decoration: none;">
                 <div class="card" style="border:1px solid #bcc1c7;background-color: #fff">
@@ -86,6 +82,7 @@ class EmailService
                 </div>
            </a>
        </div>';
+        }
 
         $replaceContent .= "</div>";
 

@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class GeniusProductLaunch extends Plugin
 {
-    public const TEMPLATE_TYPE_NAME = 'ReleaseProductLaunch';
+    public const TEMPLATE_TYPE_NAME = 'Release Product Launch';
     public const TEMPLATE_TYPE_TECHNICAL_NAME = 'release_product_launch';
 
     public const SUBJECT_ENG = "Hey {firstName}, we inform that to release product {salesChannelName}";

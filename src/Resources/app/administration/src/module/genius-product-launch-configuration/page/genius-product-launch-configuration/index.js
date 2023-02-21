@@ -2,6 +2,7 @@ import template from './genius-product-launch-configuration.html.twig';
 
 const { Component, Mixin, Defaults } = Shopware;
 const { Criteria } = Shopware.Data;
+const { mapPropertyErrors } = Shopware.Component.getComponentHelper();
 
 Component.register('genius-product-launch-configuration',{
     template,
@@ -18,23 +19,33 @@ Component.register('genius-product-launch-configuration',{
 
     data(){
         return {
+            productLaunchData: null,
             isLoading: false,
             isSaveSuccessful: false,
             config: null,
             salesChannels: [],
             mailTemplateOptions: [],
+            mailTemplateIdError: null,
             frquency: []
         }
     },
 
     computed: {
+        ...mapPropertyErrors('productLaunchData', ['mailTemplateOptions']),
+
+        isTitleRequired() {
+            return Shopware.State.getters['context/isSystemDefaultLanguage'];
+        },
+
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
         },
+        systemConfigRepository() {
+            return this.repositoryFactory.create('system_config');
+        },
         mailTemplateRepository() {
             return this.repositoryFactory.create('mail_template');
-        }
-
+        },
     },
 
     created() {
@@ -89,15 +100,33 @@ Component.register('genius-product-launch-configuration',{
         },
 
         onSave() {
+            const selectedSalesChannelId = this.$refs.configComponent.selectedSalesChannelId;
+            if (!this.$refs.configComponent.allConfigs[selectedSalesChannelId]['productLaunch.settings.mailTemplate']) {
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc(
+                        'genius-product-launch-configuration.save.errorTitleSalesChannel'
+                    )
+                });
+
+                return;
+            }
             this.isLoading = true;
             const updatePromises = [];
 
-            console.log(this.$refs.configComponent);
-            this.$refs.configComponent.save().then(() => {
+            console.log(this.$refs.configComponent.allConfigs.null['productLaunch.settings.mailTemplate']);
+            this.$refs.configComponent.save(this.systemConfigRepository, Shopware.Context.api).then(() => {
                 this.isSaveSuccessful = true;
                 this.isLoading = false;
-            })
-
+            }).catch((e) => {
+                this.isLoading = false;
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc(
+                        'genius-product-launch-configuration.save.errorTitle'
+                    )
+                });
+            });
             updatePromises.push(this.repository.save(this.frquency).then(() => {
                 Promise.all(updatePromises).then(() => {
                     this.createNotificationSuccess({

@@ -82,24 +82,24 @@ class ReleaseProductSentMailController extends AbstractController
             $releaseProductDetails['email'] = $subscriberCustomer->getEmail();
             $releaseProductInfoData[] = $releaseProductDetails;
 
-            foreach ($releaseProductInfoData as $email) {
-                foreach ($products as $product) {
-                    $productId = $product->getId();
-                    $releaseProductDetails['productData'] = $product;
-                    $uniquecustomerIds = array_unique($customerIds);
-                    $checkLog = $this->checkEntryExistOrNot($productId, $context);
-                    $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
-                    $this->emailService->sendEmail($email, $product, Context::createDefaultContext());
-                    $this->releaseProductRepository->upsert([
-                        [
-                            'id' => $id,
-                            'productId' => $productId,
-                            'value' => $uniquecustomerIds,
-                            'lastUsageAt'=> date("Y-m-d"),
-                        ]
-                    ], $context);
-                }
+        }
+        foreach ($releaseProductInfoData as $email) {
+            foreach ($products as $product) {
+                $productId = $product->getId();
+//                $releaseProductDetails['productData'] = $product;
+                $uniquecustomerIds = array_unique($customerIds);
+                $checkLog = $this->checkEntryExistOrNot($productId, $context);
+                $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
             }
+            $this->emailService->sendEmail($email, $products, Context::createDefaultContext());
+            $this->releaseProductRepository->upsert([
+                [
+                    'id' => $id,
+                    'productId' => $productId,
+                    'value' => $uniquecustomerIds,
+                    'lastUsageAt'=> date("Y-m-d"),
+                ]
+            ], $context);
         }
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }

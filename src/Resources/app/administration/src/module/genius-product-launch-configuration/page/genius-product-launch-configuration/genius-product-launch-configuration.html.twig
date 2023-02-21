@@ -4,8 +4,6 @@
         {% block genius_product_launch_configuration_header %}
             <template #smart-bar-header>
                 <h2>
-                    {{ $tc('sw-settings.index.title') }}
-                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
                     {{ $tc('genius-product-launch-configuration.header') }}
                 </h2>
             </template>
@@ -77,15 +75,27 @@
                                                                             :customInheritationCheckFunction="checkTextFieldInheritance"
                                                                             :label="$tc('genius-product-launch-configuration.card.mailTemplate')">
                                                             <template #content="props">
-                                                                <sw-single-select name="productLaunch.settings.mailTemplate"
-                                                                                  :options="mailTemplateOptions"
-                                                                                  labelProperty="name"
-                                                                                  valueProperty="name"
-                                                                                  :isInherited="props.isInherited"
-                                                                                  :value="props.currentValue"
-                                                                                  @change="props.updateCurrentValue"
-                                                                                  :disabled="props.isInherited || !acl.can('productLaunch.editor')">
-                                                                </sw-single-select>
+{#                                                                <sw-single-select name="productLaunch.settings.mailTemplate"#}
+{#                                                                                  :options="mailTemplateOptions"#}
+{#                                                                                  labelProperty="name"#}
+{#                                                                                  valueProperty="name"#}
+{#                                                                                  :isInherited="props.isInherited"#}
+{#                                                                                  :value="props.currentValue"#}
+{#                                                                                  @change="props.updateCurrentValue"#}
+{#                                                                                  :disabled="props.isInherited || !acl.can('productLaunch.editor')">#}
+{#                                                                </sw-single-select>#}
+
+                                                                <sw-single-select
+                                                                    :options="mailTemplateOptions"
+                                                                    :required="isTitleRequired"
+                                                                    :error="mailTemplateIdError"
+                                                                    labelProperty="name"
+                                                                    valueProperty="name"
+                                                                    :isInherited="props.isInherited"
+                                                                    :value="props.currentValue"
+                                                                    @change="props.updateCurrentValue"
+                                                                    show-clearable-button
+                                                                />
 
                                                             </template>
                                                         </sw-inherit-wrapper>
