@@ -80,13 +80,13 @@ class ReleaseProductSentMailController extends AbstractController
                 $customerIds[] = $subscriberCustomer->getId();
                 $customerData = $this->getCustomerGroupForPrice($subscriberCustomer, $context);
                 foreach ($customerData as $data) {
-                   $displayPrice = $data->getGroup()->getDisplayGross();
+                    $displayPrice = $data->getGroup()->getDisplayGross();
                 }
                 $salesChannelId = $subscriberCustomer->getSalesChannelId();
                 $salesChannelNames = $this->getSalesChannelName($salesChannelId, $context);
                 $salesChannelName = '';
                 foreach ($salesChannelNames as $salesChannelName) {
-                   $salesChannelName = $salesChannelName->getName();
+                    $salesChannelName = $salesChannelName->getName();
                 }
                 $releaseProductDetails = array();
                 $releaseProductDetails['salesChannelId'] = $subscriberCustomer->getSalesChannelId();
@@ -96,7 +96,7 @@ class ReleaseProductSentMailController extends AbstractController
                 $releaseProductDetails['email'] = $subscriberCustomer->getEmail();
                 $releaseProductDetails['displayPrice'] = $displayPrice;
                 $releaseProductInfoData[] = $releaseProductDetails;
-           }
+            }
             foreach ($releaseProductInfoData as $email) {
                 foreach ($products as $product) {
                     $productId = $product->getId();
@@ -113,18 +113,17 @@ class ReleaseProductSentMailController extends AbstractController
                        'lastUsageAt'=> date("Y-m-d"),
                    ]
                 ], $context);
-           }
-           dump("hello");
-           return new JsonResponse([
+            }
+            return new JsonResponse([
                'type' => 'success',
                'message' => 'Mail is sent'
-           ]);
-       } else{
+            ]);
+        } else{
            return new JsonResponse([
                'type' => 'success',
                'message' => 'No Product Launch'
            ]);
-       }
+        }
     }
     private function getSubscribeCustomers($context):array
     {
