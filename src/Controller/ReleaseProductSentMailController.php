@@ -118,11 +118,11 @@ class ReleaseProductSentMailController extends AbstractController
                'type' => 'success',
                'message' => 'Mail is sent'
             ]);
-        } else{
-           return new JsonResponse([
+        } else {
+            return new JsonResponse([
                'type' => 'success',
                'message' => 'No Product Launch'
-           ]);
+            ]);
         }
     }
     private function getSubscribeCustomers($context):array
