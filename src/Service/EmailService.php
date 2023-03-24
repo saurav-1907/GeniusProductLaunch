@@ -6,10 +6,13 @@ use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Content\MailTemplate\MailTemplateEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class EmailService
 {
@@ -21,16 +24,30 @@ class EmailService
 
     private SystemConfigService $systemConfigService;
 
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $currencyRepository;
+
     public function __construct(
         AbstractMailService $mailService,
         EntityRepository    $mailTemplate,
         LoggerInterface     $logger,
-        SystemConfigService $systemConfigService
+        SystemConfigService $systemConfigService,
+        RouterInterface           $router,
+        EntityRepositoryInterface $currencyRepository
     ) {
         $this->mailService = $mailService;
         $this->mailTemplateRepository = $mailTemplate;
         $this->logger = $logger;
         $this->systemConfigService = $systemConfigService;
+        $this->router = $router;
+        $this->currencyRepository = $currencyRepository;
     }
 
     public function sendEmail($emailDetail, $productDetail, $context)
@@ -43,55 +60,102 @@ class EmailService
             return $element->getLanguageId() === $context->getLanguageIdChain()['0'];
         })->first();
         $htmlCustomContent = $mailTranslation->getContentHtml();
-        $replaceContent = "<div style='display: flex; flex-wrap: wrap'>";
+
         $firstname = $emailDetail['firstName'];
         $lastName = $emailDetail['lastName'];
         $salesChannelName = $emailDetail['salesChannelName'];
         $email = $emailDetail['email'];
 
         $salesChannelId = $emailDetail['salesChannelId'];
+        $i=1;
+        $replaceContent = '';
         foreach ($productDetail as $productData) {
+            if($i % 2 == 1){
+                $replaceContent .= "<table style='width:600px'><tr><td> <div
+                    <div class='cms-listing-row' style='display: flex; width: 100%;'>";
+            }
             $productName = $productData->getTranslated()['name'];
             $productNumber = $productData->getProductNumber();
             $productDescription = $productData->getTranslated()['description'];
+            $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription,0,100) : $productDescription;
+//            dd($productShortDescription);
             $productPrice = $productData->getPrice()->getElements();
             $mediaData = $productData->getMedia();
             $mediaUrl = '';
             $grossPrice = 0 ;
             foreach ($productPrice as $price) {
                 $grossPrice = $price->getGross();
+                $netPrice = $price->getNet();
+                if($price->getListPrice() != null) {
+                    $grossListPrice = $price->getlistPrice()->getGross();
+                    $netListPrice = $price->getlistPrice()->getNet();
+                }
+                else {
+                    $grossListPrice = 0;
+                    $netListPrice = 0;
+                }
+                $currency = $this->getCurrencySymbol($price->getCurrencyId(), $context);
+                $currencySymbol=$currency->getSymbol();
             }
+            $productPriceArray = 0;
+            if($emailDetail['displayPrice'] == true) {
+                $productPrices = $grossPrice;
+                $productListPrices = $grossListPrice;
+            } else {
+                $productPrices = $netPrice;
+                $productListPrices = $netListPrice;
+            }
+
+            if ($productListPrices) {
+                $productPriceArray = '<span style="color: #f4d13a;">'.$currencySymbol. $productPrices .'*</span>'.'<del>'.$currencySymbol.$productListPrices.'*'.'</del>';
+            } else {
+                $productPriceArray = $currencySymbol.''. $productPrices.'*' ;
+            }
+
             foreach ($mediaData as $media) {
                 $mediaUrl = $media->getMedia()->getUrl();
             }
+
             $replacedProductName = str_replace(' ', '-', $productName);
-            $productURL = $_ENV['APP_URL'] .'/'. $replacedProductName. '/'. $productNumber;
+            $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);
+            $productURL = $this->router->generate('frontend.detail.page', ['productId' => $productData->getId() ], UrlGeneratorInterface::ABSOLUTE_URL);
             $replaceContent .= '
-        <div class="cms-listing-col" style="flex: 0 0 25%;max-width: 25%; padding:0 8px; box-sizing: border-box;">
+        <div class="cms-listing-col" style=" width: 50%; padding:0 8px; box-sizing: border-box; margin-bottom: 10px;">
             <a href='.$productURL.' style="text-decoration: none;">
-                <div class="card" style="border:1px solid #bcc1c7;background-color: #fff">
-                    <div class="card-body" style="padding: 1rem;">
-
-                            <img src='.$mediaUrl.' alt='.$productName.' style="width:100px; margin:0 auto; display: block;">
-
-                        <h4 style="text-align: center; color: #4a545b;">'.$productName.'</h4>
-                        <p style="text-align: center; overflow: hidden;
-        text-overflow: ellipsis; color:#4a545b">'.$productDescription.'</p>
-                        <div class="product-price-info" style="color: #4a545b; text-align: center; text-decoration: none; ">'.$grossPrice.'</div>
+                <div class="card" style="border:1px solid #bcc1c7;background-color: #fff;">
+                    <div class="card-body" style="padding: 1rem;     position: relative;">
+                            <img src='.$replacedmediaUrl.' alt='.$productName.' style="width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;">
+                            <div class="product-price-info" style=" background: #558394; width: 70px;height: 70px; line-height: 70px; border-radius: 50%; font-size: 11px; position: absolute;
+    top: 18px;color: #fff; text-align: center; font-weight: 600;">
+                                <span>'.$productPriceArray.'</span>
+                            </div>
+                            <h4 style="    font-size: 14px;
+    text-transform: uppercase; height: auto; min-height: 30px; text-align: center; color: #6f675a;">'.$productName.'</h4>
+                            <p style="text-align: center; overflow: hidden; height: 40px; min-height: 40px; color:#6f675a">'.$productShortDescription.'</p>
+                            <button type="button" style="color: #ffffff; text-align: center; background: #c3beb4; margin: 0 auto;
+    display: block;
+    border-radius: 0;
+    padding: 8px 22px;">More Details</button>
                     </div>
                 </div>
            </a>
        </div>';
+            if($i % 2 == 0){
+                $replaceContent .= "</div></div></td></tr></table>";
+            }
+            $i++;
         }
 
-        $replaceContent .= "</div>";
+        if($i % 4 != 1){
+            $replaceContent .= "</div></div></td></tr></table>";
+        }
 
         $data = new RequestDataBag();
-            //setup content
+        //setup content
         $htmlCustomContent = $mailTranslation->getContentHtml();
 
         $org = ["{firstName}", "{lastName}", "{salesChannelName}"];
-        $mod   = [$firstname, $lastName, $salesChannelName];
+        $mod = [$firstname, $lastName, $salesChannelName];
         $replaceCustomContent = str_replace($org, $mod, $htmlCustomContent);
 
         $replaceCustomContent = str_replace('{productsTable}', $replaceContent, $replaceCustomContent);
@@ -119,15 +183,15 @@ class EmailService
         try {
             $data->set('recipients', [$email => $email]);
             $data->set('salesChannelId', $salesChannelId);
-                $this->mailService->send($data->all(), $context);
+            $this->mailService->send($data->all(), $context);
         } catch (\Exception $e) {
-                $this->logger->error(
-                    "Could not send mail:\n"
-                    . $e->getMessage() . "\n"
-                    . 'Error Code:' . $e->getCode() . "\n"
-                    . "Template data: \n"
-                    . json_encode($data->all()) . "\n"
-                );
+            $this->logger->error(
+                "Could not send mail:\n"
+                . $e->getMessage() . "\n"
+                . 'Error Code:' . $e->getCode() . "\n"
+                . "Template data: \n"
+                . json_encode($data->all()) . "\n"
+            );
         }
     }
     //getting mail template
@@ -137,5 +201,13 @@ class EmailService
         $criteria->addFilter(new EqualsFilter('mailTemplateType.name', $mailTemplateName));
         $criteria->addAssociation('translations');
         return $this->mailTemplateRepository->search($criteria, $context)->first();
+    }
+
+    //getting currency symbol
+    private function getCurrencySymbol($currencyId, $context)
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $currencyId));
+        return $this->currencyRepository->search($criteria, $context)->first();
     }
 }

@@ -61,8 +61,8 @@ Component.register('genius-product-launch-configuration',{
             customCriteria.addFilter(Criteria.equals('name', 'launch_new_product'));
             this.repository.search(customCriteria, Shopware.Context.api)
                 .then((entity) => {
-                    this.frquency = entity[0];
-                });
+                this.frquency = entity[0];
+            });
         },
         createdComponent() {
             this.isLoading = true;
@@ -100,25 +100,14 @@ Component.register('genius-product-launch-configuration',{
         },
 
         onSave() {
-            const selectedSalesChannelId = this.$refs.configComponent.selectedSalesChannelId;
-            if (!this.$refs.configComponent.allConfigs[selectedSalesChannelId]['productLaunch.settings.mailTemplate']) {
-                this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc(
-                        'genius-product-launch-configuration.save.errorTitleSalesChannel'
-                    )
-                });
-
-                return;
-            }
             this.isLoading = true;
             const updatePromises = [];
 
-            console.log(this.$refs.configComponent.allConfigs.null['productLaunch.settings.mailTemplate']);
+            console.log(this.$refs.configComponent);
             this.$refs.configComponent.save(this.systemConfigRepository, Shopware.Context.api).then(() => {
                 this.isSaveSuccessful = true;
                 this.isLoading = false;
-            }).catch((e) => {
+            }).catch(() => {
                 this.isLoading = false;
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
@@ -128,13 +117,14 @@ Component.register('genius-product-launch-configuration',{
                 });
             });
             updatePromises.push(this.repository.save(this.frquency).then(() => {
+                console.log('updatePromises',this.frquency)
                 Promise.all(updatePromises).then(() => {
                     this.createNotificationSuccess({
                         message: this.$tc('genius-product-launch-configuration.save.success'),
                     })
                     this.isLoading = false;
                 });
-            }).catch((e) => {
+            }).catch(() => {
                 this.isLoading = false;
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
@@ -151,13 +141,13 @@ Component.register('genius-product-launch-configuration',{
             criteria.addAssociation('mailTemplateType.translations');
             this.mailTemplateRepository.search(criteria, Shopware.Context.api)
                 .then((entity) => {
-                        entity.forEach((translatedName) => {
-                            if(translatedName.mailTemplateType){
-                                this.mailTemplateOptions.push(translatedName.mailTemplateType);
-                            }
-                        });
-                        return this.mailTemplateOptions;
-                });
+                    entity.forEach((translatedName) => {
+                        if(translatedName.mailTemplateType){
+                            this.mailTemplateOptions.push(translatedName.mailTemplateType);
+                        }
+                    });
+                return this.mailTemplateOptions;
+            });
         },
     }
 });

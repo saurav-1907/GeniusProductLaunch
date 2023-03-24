@@ -26,7 +26,6 @@ Module.register('search-wizzy', {
     },
 
     navigation: [{
-        //id: 'search-wizzy-list',
         label: 'search-wizzy.general.mainMenuItemGeneral',
         color: '#ff3d58',
         path: 'search.wizzy.list',

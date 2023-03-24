@@ -1,25 +1,27 @@
 {
     "genius-product-launch-configuration": {
-        "header": "GeniusProductLaunch",
+        "header": "Produkteinführung",
         "card": {
-            "selectTemplate": "Wählen Sie E-Mail-Vorlage aus",
-            "selectTime": "Wählen Sie Zeit",
+            "selectTemplate": "MailTemplate auswählen",
+            "selectTime": "Zeit auswählen",
             "mailTemplate": "Mail-Vorlage",
-            "cronTime": "Wählen Sie die Zeit für den Set-Cron",
+            "cronTime": "Zeit für Set-Cron auswählen",
             "messageSaveSuccess": "Details erfolgreich gespeichert",
-            "selectActivate" : "Wählen Sie Allgemeine Konfigurationen",
-            "active" : "Aktiv"
+            "selectActivate" :"Allgemeine Konfigurationen auswählen",
+            "active": "Aktiv"
         },
         "frequency": {
             "labelLastExecutionTime": "Letzte Hinrichtung"
         },
         "save": {
-            "errorTitle" : "Konfiguration konnte nicht gespeichert werden",
-            "success" : "Konfiguration wird gespeichert"
+            "errorTitle": "Konfiguration konnte nicht gespeichert werden",
+            "errorTitleSalesChannel" :"Bitte E-Mail-Vorlage auswählen",
+            "success": "onfiguration wird gespeichert"
         },
         "general": {
-            "mainMenuItemGeneral": "GeniusProductLaunch",
-            "descriptionTextModule": "GeniusProductLaunch-Einstellungen"
+            "mainMenuItemGeneral": "Produkteinführung",
+            "descriptionTextModule": "Einstellungen Produkteinführung"
         }
     }
 }
+
