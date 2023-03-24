@@ -6,7 +6,8 @@
         },
         "list": {
             "importProductBtnTitle": "Import all products",
-            "importProductBtnLabel": "Import Wizzy"
+            "importProductBtnLabel": "Import Wizzy",
+            "ProductImportCronBtnLabel": "Product Import Cron"
         }
     }
 }

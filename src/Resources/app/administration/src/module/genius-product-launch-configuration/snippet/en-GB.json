@@ -1,13 +1,13 @@
 {
     "genius-product-launch-configuration": {
-        "header": "GeniusProductLaunch",
+        "header": "Product Launch",
         "card": {
             "selectTemplate": "Select MailTemplate",
             "selectTime": "Select Time",
-            "mailTemplate": "MailTemplate",
+            "mailTemplate": "Mail Template",
             "cronTime": "Select time for set cron",
             "messageSaveSuccess": "Details saved successfully",
-            "selectActivate" : "Select general configrations",
+            "selectActivate" : "Select General Configurations",
             "active" : "Active"
         },
         "frequency": {
@@ -15,6 +15,7 @@
         },
         "save": {
             "errorTitle" : "Configuration could not save",
+            "errorTitleSalesChannel" : "Please Select MailTemplate",
             "success" : "Configuration is saved"
         },
         "general": {

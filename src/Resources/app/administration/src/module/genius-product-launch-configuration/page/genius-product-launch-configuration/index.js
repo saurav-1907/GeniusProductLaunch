@@ -2,6 +2,7 @@ import template from './genius-product-launch-configuration.html.twig';
 
 const { Component, Mixin, Defaults } = Shopware;
 const { Criteria } = Shopware.Data;
+const { mapPropertyErrors } = Shopware.Component.getComponentHelper();
 
 Component.register('genius-product-launch-configuration',{
     template,
@@ -18,23 +19,33 @@ Component.register('genius-product-launch-configuration',{
 
     data(){
         return {
+            productLaunchData: null,
             isLoading: false,
             isSaveSuccessful: false,
             config: null,
             salesChannels: [],
             mailTemplateOptions: [],
+            mailTemplateIdError: null,
             frquency: []
         }
     },
 
     computed: {
+        ...mapPropertyErrors('productLaunchData', ['mailTemplateOptions']),
+
+        isTitleRequired() {
+            return Shopware.State.getters['context/isSystemDefaultLanguage'];
+        },
+
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
         },
+        systemConfigRepository() {
+            return this.repositoryFactory.create('system_config');
+        },
         mailTemplateRepository() {
             return this.repositoryFactory.create('mail_template');
-        }
-
+        },
     },
 
     created() {
@@ -50,8 +61,8 @@ Component.register('genius-product-launch-configuration',{
             customCriteria.addFilter(Criteria.equals('name', 'launch_new_product'));
             this.repository.search(customCriteria, Shopware.Context.api)
                 .then((entity) => {
-                    this.frquency = entity[0];
-                });
+                this.frquency = entity[0];
+            });
         },
         createdComponent() {
             this.isLoading = true;
@@ -93,19 +104,27 @@ Component.register('genius-product-launch-configuration',{
             const updatePromises = [];
 
             console.log(this.$refs.configComponent);
-            this.$refs.configComponent.save().then(() => {
+            this.$refs.configComponent.save(this.systemConfigRepository, Shopware.Context.api).then(() => {
                 this.isSaveSuccessful = true;
                 this.isLoading = false;
-            })
-
+            }).catch(() => {
+                this.isLoading = false;
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc(
+                        'genius-product-launch-configuration.save.errorTitle'
+                    )
+                });
+            });
             updatePromises.push(this.repository.save(this.frquency).then(() => {
+                console.log('updatePromises',this.frquency)
                 Promise.all(updatePromises).then(() => {
                     this.createNotificationSuccess({
                         message: this.$tc('genius-product-launch-configuration.save.success'),
                     })
                     this.isLoading = false;
                 });
-            }).catch((e) => {
+            }).catch(() => {
                 this.isLoading = false;
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
@@ -122,13 +141,13 @@ Component.register('genius-product-launch-configuration',{
             criteria.addAssociation('mailTemplateType.translations');
             this.mailTemplateRepository.search(criteria, Shopware.Context.api)
                 .then((entity) => {
-                        entity.forEach((translatedName) => {
-                            if(translatedName.mailTemplateType){
-                                this.mailTemplateOptions.push(translatedName.mailTemplateType);
-                            }
-                        });
-                        return this.mailTemplateOptions;
-                });
+                    entity.forEach((translatedName) => {
+                        if(translatedName.mailTemplateType){
+                            this.mailTemplateOptions.push(translatedName.mailTemplateType);
+                        }
+                    });
+                return this.mailTemplateOptions;
+            });
         },
     }
 });

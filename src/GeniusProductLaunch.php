@@ -15,40 +15,39 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class GeniusProductLaunch extends Plugin
 {
-    public const TEMPLATE_TYPE_NAME = 'ReleaseProductLaunch';
+    public const TEMPLATE_TYPE_NAME = 'Release Product Launch';
     public const TEMPLATE_TYPE_TECHNICAL_NAME = 'release_product_launch';
 
     public const SUBJECT_ENG = "Hey {firstName}, we inform that to release product {salesChannelName}";
 
     public const SUBJECT_DE = "Hallo {firstName}, wir teilen das mit, um das Produkt freizugeben {salesChannelName}";
 
-    public const CONTAIN_PLAIN_EN = "Dear {firstName} {lastName},\nWe wanted to thank you for choosing {salesChannelName} for your recent purchase order number
-    \nWe're constantly striving to improve and provide the best possible experience for our customers, and your feedback is essential in helping
-    us achieve that goal. We'd be grateful if you could take a few minutes to share your thoughts on the products. Your review will not only help us, but it will also assist other customers in their purchasing decisions.
-    \nWe'll appreciate your honest feedback on our products. You can visit below product links to write a review:
-    Product Name
-     {productName} {productDescription}
-    \n\nLooking forward to your review and to be your go-to site for Shopping\nThank you again for choosing {salesChannelName}.";
+    public const CONTAIN_PLAIN_EN = "Dear {firstName} {lastName},\nWe are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.\n\n
 
-    public const CONTAIN_PLAIN_DE = "Sehr geehrte {firstName} {lastName},\nWir möchten uns bei Ihnen dafür bedanken, dass Sie {salesChannelName} für Ihren letzten Einkauf ausgewählt haben Bestellnummer:
-    \nWir sind ständig bestrebt, uns zu verbessern und unseren Kunden das bestmögliche Erlebnis zu bieten, und Ihr Feedback ist entscheidend, um uns dabei zu helfen, dieses Ziel zu erreichen. Wir
-    wären Ihnen dankbar, wenn Sie sich ein paar Minuten Zeit nehmen könnten, um uns Ihre Meinung zu den Produkten mitzuteilen. Ihre Bewertung hilft nicht nur uns, sondern auch anderen Kunden bei ihrer Kaufentscheidung.
-    \nWir freuen uns über Ihr ehrliches Feedback zu unseren Produkten. Sie können die folgenden Produktlinks besuchen, um eine Bewertung zu schreiben:
-     Product Name productURL
-     {productName} {productDescription} {productURL}
-    \n\nIch freue mich auf Ihre Bewertung und darauf, Ihre Anlaufstelle für Shopping zu sein\nNochmals vielen Dank, dass Sie sich entschieden haben {salesChannelName}.";
-
-    public const CONTAIN_HTML_EN = " Dear {firstName} {lastName},<br><br>We wanted to thank you for choosing {salesChannelName} for your recent purchase order number: <br><br>We're constantly striving to improve and provide the best possible experience for our customers, and your feedback is essential in helping us achieve that goal. We'd be grateful if you could take a few minutes to share your thoughts on the products. Your review will not only help us, but it will also assist other customers in their purchasing decisions.<br><br>We'll appreciate your honest feedback on our products. You can visit below product links to write a review:<br><br>
-    <div class='cms-listing-row' style='display: flex;flex-wrap: wrap;'>
-    {productsTable}
-    </div>
-<br>Looking forward to your review and to be your go-to site for Shopping<br>Thank you again for choosing {salesChannelName}.";
-    public const CONTAIN_HTML_DE = "Sehr geehrte {firstName} {lastName},<br><br>Wir möchten uns bei Ihnen dafür bedanken, dass Sie {salesChannelName} für Ihren letzten Einkauf ausgewählt haben Bestellnummer: .<br><br>Wir sind ständig bestrebt, uns zu verbessern und unseren Kunden das bestmögliche Erlebnis zu bieten, und Ihr Feedback ist entscheidend, um uns dabei zu helfen, dieses Ziel zu erreichen. Wir wären Ihnen dankbar, wenn Sie sich ein paar Minuten Zeit nehmen könnten, um uns Ihre Meinung zu den Produkten mitzuteilen. Ihre Bewertung hilft nicht nur uns, sondern auch anderen Kunden bei ihrer Kaufentscheidung.<br><br>Wir freuen uns über Ihr ehrliches Feedback zu unseren Produkten. Sie können die folgenden Produktlinks besuchen, um eine Bewertung zu schreiben:<br>
-        <div class='cms-listing-row' style='display: flex;flex-wrap: wrap;'>
     {productsTable}
 
-    </div>
-    <br>Ich freue mich auf Ihre Bewertung und darauf, Ihre Anlaufstelle für Shopping zu sein<br>Nochmals vielen Dank, dass Sie sich entschieden haben {salesChannelName}.";
+\n\nWe are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.";
+
+    public const CONTAIN_PLAIN_DE = "Dear {firstName} {lastName},\nWe are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.\n\n
+
+    {productsTable}
+
+\n\nWe are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.";
+
+    public const CONTAIN_HTML_EN = "Dear {firstName} {lastName},<br><br>We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.<br><br>
+
+{productsTable}
+
+<div style='display: block; width: 100%'>
+We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</div>";
+
+    public const CONTAIN_HTML_DE = "Dear {firstName} {lastName},<br><br>We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.
+
+{productsTable}
+
+<div style='display: block; width: 100%'>
+We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</div>";
+
 
     public function install(InstallContext $installContext): void
     {

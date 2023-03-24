@@ -1,9 +1,6 @@
 import template from './search-wizzy-list.html.twig';
 
-
-//const { Component } = Shopware;
 const { Component,Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
 
 Component.register('search-wizzy-list', {
     template, // ES6 shorthand for: 'template: template'
@@ -17,7 +14,6 @@ Component.register('search-wizzy-list', {
         Mixin.getByName('notification')
     ],
 
-
     methods: {
         importProduct() {
             //alert("get all products");
@@ -26,34 +22,26 @@ Component.register('search-wizzy-list', {
                 .get('/search-wizzy/productimport',
                     {headers}
                 ).then((response) => {
-
-                    if(response.data.type === 'error')
-                    {
+                    if(response.data.type === 'successs'){
                         this.createNotificationError({
                             title: response.data.type,
-                            message: "error stop"
+                            message: response.data.message
                         });
-                        return;
-                    }
-                    if(response.data.type === 'success')
-                    {
-                        this.createNotificationError({
+                    }else{
+                        this.createNotificationSuccess({
                             title: response.data.type,
-                            message: "successfully called"
+                            message: response.data.message
                         });
-
                     }
-                });
+            });
         },
 
         releaseProduct() {
             // alert("releaseProduct Running");
             let headers = this.configService.getBasicHeaders();
-            return this.configService.httpClient
-                .get('/search-wizzy/releaseProduct',
-                    {headers}
-                )
+            return this.configService.httpClient.get('/search-wizzy/releaseProduct',
+                {headers}
+            )
         }
     }
-
  });
