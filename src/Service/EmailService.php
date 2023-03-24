@@ -70,27 +70,27 @@ class EmailService
         $i=1;
         $replaceContent = '';
         foreach ($productDetail as $productData) {
-            if($i % 2 == 1){
+            if ($i % 2 == 1) {
                 $replaceContent .= "<table style='width:600px'><tr><td> <div
                     <div class='cms-listing-row' style='display: flex; width: 100%;'>";
             }
             $productName = $productData->getTranslated()['name'];
             $productNumber = $productData->getProductNumber();
             $productDescription = $productData->getTranslated()['description'];
-            $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription,0,100) : $productDescription;
+            $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription, 0, 100) : $productDescription;
 //            dd($productShortDescription);
             $productPrice = $productData->getPrice()->getElements();
             $mediaData = $productData->getMedia();
             $mediaUrl = '';
-            $grossPrice = 0 ;
+            $grossPrice = $netPrice = $grossListPrice = $netListPrice = 0 ;
+            $currency = $currencySymbol = null;
             foreach ($productPrice as $price) {
                 $grossPrice = $price->getGross();
                 $netPrice = $price->getNet();
-                if($price->getListPrice() != null) {
+                if ($price->getListPrice() != null) {
                     $grossListPrice = $price->getlistPrice()->getGross();
                     $netListPrice = $price->getlistPrice()->getNet();
-                }
-                else {
+                } else {
                     $grossListPrice = 0;
                     $netListPrice = 0;
                 }
@@ -98,7 +98,7 @@ class EmailService
                 $currencySymbol=$currency->getSymbol();
             }
             $productPriceArray = 0;
-            if($emailDetail['displayPrice'] == true) {
+            if ($emailDetail['displayPrice'] == true) {
                 $productPrices = $grossPrice;
                 $productListPrices = $grossListPrice;
             } else {
@@ -140,13 +140,13 @@ class EmailService
                 </div>
            </a>
        </div>';
-            if($i % 2 == 0){
+            if ($i % 2 == 0) {
                 $replaceContent .= "</div></div></td></tr></table>";
             }
             $i++;
         }
 
-        if($i % 4 != 1){
+        if ($i % 4 != 1) {
             $replaceContent .= "</div></div></td></tr></table>";
         }
 

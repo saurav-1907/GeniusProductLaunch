@@ -73,9 +73,10 @@ class ReleaseProductSentMailController extends AbstractController
     {
         $subscriberCustomers = $this->getSubscribeCustomers($context);
         $products = $this->getAllProduct($context);
-        $releaseProductInfoData = [];
-       if ($products) {
-           foreach ($subscriberCustomers as $subscriberCustomer) {
+        $customerIds =  $releaseProductInfoData = [];
+        $displayPrice = 0;
+        if ($products) {
+            foreach ($subscriberCustomers as $subscriberCustomer) {
                $customerIds[] = $subscriberCustomer->getId();
                $customerData = $this->getCustomerGroupForPrice($subscriberCustomer, $context);
                foreach ($customerData as $data) {
@@ -96,7 +97,7 @@ class ReleaseProductSentMailController extends AbstractController
                $releaseProductDetails['displayPrice'] = $displayPrice;
                $releaseProductInfoData[] = $releaseProductDetails;
            }
-           foreach ($releaseProductInfoData as $email) {
+            foreach ($releaseProductInfoData as $email) {
                foreach ($products as $product) {
                 $productId = $product->getId();
                }
@@ -118,8 +119,7 @@ class ReleaseProductSentMailController extends AbstractController
                'type' => 'success',
                'message' => 'Mail is sent'
            ]);
-       }
-       else{
+       } else{
            return new JsonResponse([
                'type' => 'success',
                'message' => 'No Product Launch'
@@ -132,7 +132,6 @@ class ReleaseProductSentMailController extends AbstractController
         $criteria->addAssociation('customer');
         return $this->newsletterRecipientRepository->search($criteria, $context)->getElements();
     }
-
     private function getAllProduct($context): array
     {
         $criteria = new Criteria();
@@ -141,14 +140,12 @@ class ReleaseProductSentMailController extends AbstractController
         $criteria->addFilter(new ContainsFilter('releaseDate', date("Y-m-d")));
         return $this->productsRepository->search($criteria, $context)->getElements();
     }
-
     private function getSalesChannelName($salesChannelId, Context $context)
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $salesChannelId));
         return $this->salesChannelRepository->search($criteria, $context)->getElements();
     }
-
     public function checkEntryExistOrNot($productId, $context)
     {
         $criteria = new Criteria();
@@ -156,8 +153,6 @@ class ReleaseProductSentMailController extends AbstractController
         $criteria->addFilter(new EqualsFilter('productId', $productId));
         return $this->releaseProductRepository->search($criteria, $context);
     }
-
-
     private function getCustomerGroupForPrice($subscriberCustomer, Context $context)
     {
         $criteria = new Criteria();
