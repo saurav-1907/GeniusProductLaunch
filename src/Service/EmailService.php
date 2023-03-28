@@ -133,7 +133,7 @@ class EmailService
             foreach ($mediaData as $media) {
                 $mediaUrl = $media->getMedia()->getUrl();
             }
-            if($getCover == null ) {
+            if ($getCover == null) {
                 $mediaUrl = $this->getProductMediaData($parentId, $context)->getMedia()->getUrl();
             }
             $replacedProductName = str_replace(' ', '-', $productName);
