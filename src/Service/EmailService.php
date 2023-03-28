@@ -6,7 +6,6 @@ use Shopware\Core\Content\Mail\Service\AbstractMailService;
 use Shopware\Core\Content\MailTemplate\MailTemplateEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -30,9 +29,14 @@ class EmailService
     private $router;
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityRepository
      */
     private $currencyRepository;
+
+    /**
+     * @var EntityRepository
+     */
+    private $productRepository;
 
     public function __construct(
         AbstractMailService $mailService,
@@ -40,7 +44,8 @@ class EmailService
         LoggerInterface     $logger,
         SystemConfigService $systemConfigService,
         RouterInterface           $router,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepository $currencyRepository,
+        EntityRepository $productRepository
     ) {
         $this->mailService = $mailService;
         $this->mailTemplateRepository = $mailTemplate;
@@ -48,6 +53,7 @@ class EmailService
         $this->systemConfigService = $systemConfigService;
         $this->router = $router;
         $this->currencyRepository = $currencyRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function sendEmail($emailDetail, $productDetail, $context)
@@ -74,13 +80,25 @@ class EmailService
                 $replaceContent .= "<table style='width:600px'><tr><td> <div
                     <div class='cms-listing-row' style='display: flex; width: 100%;'>";
             }
+            $parentId = $productData->getParentId();
             $productName = $productData->getTranslated()['name'];
-            $productNumber = $productData->getProductNumber();
             $productDescription = $productData->getTranslated()['description'];
+            if ($parentId != null) {
+                $productName = $this->getVariantProductName($parentId, $context)->getName();
+                $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
+            }
+            if ($i % 4 == 1) {
+                $replaceContent .= "<div class='cms-listing-row' style='display: flex; flex-wrap: wrap;  width: 100%;'>";
+            }
+
+            if ($productDescription == null) {
+                $productName = $this->getVariantProductName($parentId, $context)->getName();
+                $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
+            }
             $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription, 0, 100) : $productDescription;
-//            dd($productShortDescription);
             $productPrice = $productData->getPrice()->getElements();
             $mediaData = $productData->getMedia();
+            $getCover = $productData->getCover()->getMedia()->getUrl();
             $mediaUrl = '';
             $grossPrice = $netPrice = $grossListPrice = $netListPrice = 0 ;
             $currency = $currencySymbol = null;
@@ -115,7 +133,9 @@ class EmailService
             foreach ($mediaData as $media) {
                 $mediaUrl = $media->getMedia()->getUrl();
             }
-
+            if($getCover == null ) {
+                $mediaUrl = $this->getProductMediaData($parentId, $context)->getMedia()->getUrl();
+            }
             $replacedProductName = str_replace(' ', '-', $productName);
             $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);
             $productURL = $this->router->generate('frontend.detail.page', ['productId' => $productData->getId() ], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -209,5 +229,22 @@ class EmailService
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $currencyId));
         return $this->currencyRepository->search($criteria, $context)->first();
+    }
+
+    public function getVariantProductName($productData, $context)
+    {
+        $criteria = new Criteria();
+        $criteria->addAssociation('translation');
+
+        $criteria->addFilter(new EqualsFilter('id', $productData->getId()));
+        return $this->productRepository->search($criteria, $context)->first();
+    }
+
+    public function getProductMediaData($parentId, $context)
+    {
+        $criteria = new Criteria();
+        $criteria->addAssociation('media');
+        $criteria->addFilter(new EqualsFilter('id', $parentId));
+        return $this->productRepository->search($criteria, $context)->first();
     }
 }
