@@ -135,6 +135,8 @@ class ReleaseProductSentMailController extends AbstractController
     {
         $criteria = new Criteria();
         $criteria->addAssociation('media');
+        $criteria->addAssociation('manufacturer');
+        $criteria->addAssociation('manufacturer.media');
         $criteria->addAssociation('cover');
         $criteria->addFilter(new EqualsFilter('active', true));
         $criteria->addFilter(new ContainsFilter('releaseDate', date("Y-m-d")));

@@ -29,7 +29,7 @@ Module.register('search-wizzy', {
         label: 'search-wizzy.general.mainMenuItemGeneral',
         color: '#ff3d58',
         path: 'search.wizzy.list',
-        parent: 'sw-catalogue',
+        parent: 'sw-order',
         icon: 'default-shopping-paper-bag-product',
         position: 100
     }]

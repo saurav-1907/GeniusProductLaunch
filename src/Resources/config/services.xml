@@ -5,6 +5,10 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="GeniusProductLaunch\Subscriber\PriceFilterSubscriber">
+<!--            <argument type="service" id="product.repository"/>-->
+            <tag name="kernel.event_subscriber"/>
+           </service>
 
         <!-- Email service -->
         <service id="GeniusProductLaunch\Service\EmailService" public="true">
