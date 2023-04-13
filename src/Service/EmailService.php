@@ -74,7 +74,7 @@ class EmailService
 
         $salesChannelId = $emailDetail['salesChannelId'];
         $i=1;
-        $data = null;
+        $manufacturerMediaData = null;
         $replaceContent = '';
         foreach ($productDetail as $productData) {
             $parentId = $productData->getParentId();
@@ -87,14 +87,12 @@ class EmailService
 
             if ($parentId != null) {
                 $productName = $this->getVariantProductName($parentId, $context);
-
-                $mediaData = $this->getVariantProductName($parentId, $context)->getMedia();
                 $getCover = $this->getVariantProductName($parentId, $context)->getCover()->getMedia()->getUrl();
                 $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
                 $productPrice = $this->getVariantProductName($parentId, $context)->getPrice();
                 $manufacturerMediaDatas = $this->getVariantProductName($parentId, $context)->getChildren()->getElements();
                 foreach ($manufacturerMediaDatas as $key => $manufacturerMediaUrls) {
-                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber){
+                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber) {
                         $manufacturerMediaData = $manufacturerMediaUrls->getManufacturer()->getMedia()->getUrl();
                     }
                 }
@@ -113,16 +111,7 @@ class EmailService
             if ($i % 4 == 1) {
                 $replaceContent .= "<div class='cms-listing-row' style='display: flex; flex-wrap: wrap;  width: 100%;'>";
             }
-
-//            if ($productDescription == null) {
-//                $productName = $this->getVariantProductName($parentId, $context)->getName();
-//                $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
-//            }
             $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription, 0, 100) : $productDescription;
-//            $productPrice = $productData->getPrice()->getElements();
-//            $mediaData = $productData->getMedia();
-
-//            $getCover = $productData->getCover()->getMedia()->getUrl();
             $mediaUrl = '';
             $grossPrice = $netPrice = $grossListPrice = $netListPrice = 0 ;
             $manufacturerData  = $manufacturerMediaDataUrl = $currencySymbol = null;
@@ -154,21 +143,13 @@ class EmailService
                 $productPriceArray = $currencySymbol.''. $productPrices.'*' ;
             }
 
-            foreach ($mediaData as $media) {
-                $mediaUrl = $media->getMedia()->getUrl();
-            }
-
             if ($manufacturerMediaData != null) {
-                /*$manufacturerData = '<img src=".$manufacturerMediaDataUrl." alt=".$productName." style="width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;">';*/
                 $manufacturerData = "<img src='$manufacturerMediaDataUrl' style='width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;'>";
-//                dd($manufacturerData);
-            } /*else {
-                $manufacturerData = $manufacturerMediaData->getName();
-            }*/
+            }
             if ($getCover == null) {
                 $mediaUrl = $this->getProductMediaData($parentId, $context)->getMedia()->getUrl();
             }
-//            dd($mediaUrl);
+
             $manufacturerName = str_replace(' ', '-', $productName);
             $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);
             $productURL = $this->router->generate('frontend.detail.page', ['productId' => $productData->getId() ], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -236,7 +217,6 @@ class EmailService
             $data->set('subject', $replaceHtmlCustomSubject);
         }
         try {
-//            dd($data);
             $data->set('recipients', [$email => $email]);
             $data->set('salesChannelId', $salesChannelId);
             $this->mailService->send($data->all(), $context);
