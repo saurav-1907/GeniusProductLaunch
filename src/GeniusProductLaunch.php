@@ -34,19 +34,51 @@ class GeniusProductLaunch extends Plugin
 
 \n\nWe are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.";
 
-    public const CONTAIN_HTML_EN = "Dear {firstName} {lastName},<br><br>We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.<br><br>
+    public const CONTAIN_HTML_EN = '<table style="width: 800px; padding-bottom:10px; margin: 0 auto">
+     <tr style="background-position: center;background-repeat: no-repeat; background-size: contain;" width="100%" align="center" background="https://www.geniushome.ch/media/9e/9a/e8/1678962575/mail-banner.png">
+        <td style="text-align: center;">
+            <div class="banner" style="position:relative;padding:40px 0;">
+                <div class="banner-content" style="width: 100%;">
+                    <p style="color: #fff; font-size:18px; margin:0;">OUR SPECIAL OFFER FOR YOU</p>
+                    <h2 style="color: #fff; font-weight: bold; margin:8px 0 0 0; letter-spacing: 3px; font-size:22px;">SHOP NOW</h2>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;">
 
-{productsTable}
+            <p style="line-height:18px; letter-spacing:1px;">Dear {firstName} {lastName},</p>
+            <p style="line-height:18px; letter-spacing:1px;">We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.</p>
+            <p style="line-height:18px; letter-spacing:1px;">{productsTable}</p>
+            <p style="line-height:18px; letter-spacing:1px;">We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</p>
+        </td>
+    </tr>
+</table>
+';
 
-<div style='display: block; width: 100%'>
-We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</div>";
+    public const CONTAIN_HTML_DE = '<table style="width: 800px; padding-bottom:10px; margin: 0 auto">
+     <tr style="background-position: center;background-repeat: no-repeat; background-size: contain;" width="100%" align="center" background="https://www.geniushome.ch/media/9e/9a/e8/1678962575/mail-banner.png">
+        <td style="text-align: center;">
+            <div class="banner" style="position:relative;padding:40px 0;">
+                <div class="banner-content" style="width: 100%;">
+                    <p style="color: #fff; font-size:18px; margin:0;">OUR SPECIAL OFFER FOR YOU</p>
+                    <h2 style="color: #fff; font-weight: bold; margin:8px 0 0 0; letter-spacing: 3px; font-size:22px;">SHOP NOW</h2>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;">
 
-    public const CONTAIN_HTML_DE = "Dear {firstName} {lastName},<br><br>We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.
-
-{productsTable}
-
-<div style='display: block; width: 100%'>
-We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</div>";
+            <p style="line-height:18px; letter-spacing:1px;">Dear {firstName} {lastName},</p>
+            <p style="line-height:18px; letter-spacing:1px;">We are excited to announce the launch of our new product line! As {salesChannelName}, we have launched each product, ensuring that they meet our high standards for quality. Checkout our new range of products.</p>
+            <p style="line-height:18px; letter-spacing:1px;">{productsTable}</p>
+            <p style="line-height:18px; letter-spacing:1px;">We are committed to providing you with the best possible shopping experience, and we are confident that our new product line will exceed your expectations.</p>
+        </td>
+    </tr>
+</table>
+';
 
 
     public function install(InstallContext $installContext): void

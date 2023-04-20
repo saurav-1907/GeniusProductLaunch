@@ -74,25 +74,28 @@ class EmailService
 
         $salesChannelId = $emailDetail['salesChannelId'];
         $i=1;
-        $manufacturerMediaData = null;
+        $data = null;
         $replaceContent = '';
         foreach ($productDetail as $productData) {
             $parentId = $productData->getParentId();
             $productNumber = $productData->getProductNumber();
             if ($i % 2 == 1) {
-                $replaceContent .= "<table style='width:600px'><tr><td> <div
+                $replaceContent .= "<table style='width:800px'><tr><td> <div
                     <div class='cms-listing-row' style='display: flex; width: 100%;'>";
             }
 
-
+            $manufacturerData  = $manufacturerMediaDataUrl = $currencySymbol = null;
             if ($parentId != null) {
                 $productName = $this->getVariantProductName($parentId, $context);
+
+                $mediaData = $this->getVariantProductName($parentId, $context)->getMedia();
                 $getCover = $this->getVariantProductName($parentId, $context)->getCover()->getMedia()->getUrl();
+
                 $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
                 $productPrice = $this->getVariantProductName($parentId, $context)->getPrice();
                 $manufacturerMediaDatas = $this->getVariantProductName($parentId, $context)->getChildren()->getElements();
                 foreach ($manufacturerMediaDatas as $key => $manufacturerMediaUrls) {
-                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber) {
+                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber){
                         $manufacturerMediaData = $manufacturerMediaUrls->getManufacturer()->getMedia()->getUrl();
                     }
                 }
@@ -100,21 +103,35 @@ class EmailService
                 $productName = $productData->getTranslated()['name'];
                 $productDescription = $productData->getTranslated()['description'];
                 $getCover = $productData->getCover()->getMedia()->getUrl();
+
                 $productDescription = $productData->getDescription();
                 $productPrice = $productData->getPrice();
                 $manufacturerMediaDatas = $productData->getManufacturer();
                 if ($manufacturerMediaDatas->getMedia()) {
-                    $manufacturerMediaData = $manufacturerMediaDatas->getMedia()->getUrl();
+                    $manufacturerMediaUrls = $manufacturerMediaDatas->getMedia()->getUrl();
+                    if ($manufacturerMediaUrls != null) {
+                        /*$manufacturerData = '<img src=".$manufacturerMediaDataUrl." alt=".$productName." style="width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;">';*/
+                        $manufacturerData = "<img src='$manufacturerMediaUrls' style='width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;'>";
+//                dd($manufacturerData);
+                    }
                 }
             }
-
-            if ($i % 4 == 1) {
+            if ($i % 2 == 1) {
                 $replaceContent .= "<div class='cms-listing-row' style='display: flex; flex-wrap: wrap;  width: 100%;'>";
             }
+
+//            if ($productDescription == null) {
+//                $productName = $this->getVariantProductName($parentId, $context)->getName();
+//                $productDescription = $this->getVariantProductName($parentId, $context)->getDescription();
+//            }
             $productShortDescription = (strlen($productDescription) > 150)?substr($productDescription, 0, 100) : $productDescription;
+//            $productPrice = $productData->getPrice()->getElements();
+//            $mediaData = $productData->getMedia();
+
+//            $getCover = $productData->getCover()->getMedia()->getUrl();
             $mediaUrl = '';
             $grossPrice = $netPrice = $grossListPrice = $netListPrice = 0 ;
-            $manufacturerData  = $manufacturerMediaDataUrl = $currencySymbol = null;
+
             foreach ($productPrice as $price) {
                 $grossPrice = $price->getGross();
                 $netPrice = $price->getNet();
@@ -143,15 +160,17 @@ class EmailService
                 $productPriceArray = $currencySymbol.''. $productPrices.'*' ;
             }
 
-            if ($manufacturerMediaData != null) {
-                $manufacturerData = "<img src='$manufacturerMediaDataUrl' style='width:100px; margin:0 auto; display: block; height: 100px; object-fit: contain;'>";
-            }
-            if ($getCover == null) {
-                $mediaUrl = $this->getProductMediaData($parentId, $context)->getMedia()->getUrl();
-            }
 
+
+            /*else {
+                $manufacturerData = $manufacturerMediaData->getName();
+            }*/
+//            if ($getCover == null) {
+//                $mediaUrl = $this->getProductMediaData($parentId, $context)->getMedia()->getUrl();
+//            }
+//            dd($mediaUrl);
             $manufacturerName = str_replace(' ', '-', $productName);
-            $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);
+            $replacedmediaUrl = str_replace(' ', '%20', $getCover);
             $productURL = $this->router->generate('frontend.detail.page', ['productId' => $productData->getId() ], UrlGeneratorInterface::ABSOLUTE_URL);
             $replaceContent .= '
         <div class="cms-listing-col" style=" width: 50%; padding:0 8px; box-sizing: border-box; margin-bottom: 10px;">
@@ -177,13 +196,13 @@ class EmailService
            </a>
        </div>';
             if ($i % 2 == 0) {
-                $replaceContent .= "</div></div></td></tr></table>";
+                $replaceContent .= "</div>";
             }
             $i++;
         }
 
-        if ($i % 4 != 1) {
-            $replaceContent .= "</div></div></td></tr></table>";
+        if ($i % 2 != 1) {
+            $replaceContent .= "</div><br>";
         }
 
         $data = new RequestDataBag();
@@ -217,6 +236,7 @@ class EmailService
             $data->set('subject', $replaceHtmlCustomSubject);
         }
         try {
+//            dd($data);
             $data->set('recipients', [$email => $email]);
             $data->set('salesChannelId', $salesChannelId);
             $this->mailService->send($data->all(), $context);
