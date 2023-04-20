@@ -95,7 +95,7 @@ class EmailService
                 $productPrice = $this->getVariantProductName($parentId, $context)->getPrice();
                 $manufacturerMediaDatas = $this->getVariantProductName($parentId, $context)->getChildren()->getElements();
                 foreach ($manufacturerMediaDatas as $key => $manufacturerMediaUrls) {
-                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber){
+                    if ($manufacturerMediaUrls->getProductNumber() == $productNumber) {
                         $manufacturerMediaData = $manufacturerMediaUrls->getManufacturer()->getMedia()->getUrl();
                     }
                 }
