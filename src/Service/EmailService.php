@@ -109,18 +109,17 @@ class EmailService
                 $productPricedecimal = number_format($productPrices, 2);
                 $productPriceArray = '<span style="color: #f4d13a;">'.$currencySymbol. $productPricedecimal .'*</span>'.'<del>'.$currencySymbol.$productListPrices.'*'.'</del>';
             } else {
-                $productPricedecimal = number_format($productPrices, 2 );
+                $productPricedecimal = number_format($productPrices, 2);
                 $productPriceArray = $currencySymbol.''. $productPricedecimal.'*' ;
             }
 
             foreach ($mediaData as $media) {
                 $mediaUrl = $media->getMedia()->getUrl();
             }
-            $replacedProduct = str_replace(str_split(
-                '\\/:*?"<>|+-% '), '-', $productName);
+            $replacedProduct = str_replace(str_split('\\/:*?"<>|+-% '), '-', $productName);
 
-            $str = ['--','% ','%20','%','/'];
-            $rplc =['-','-'];
+            $str = ['--', '% ', '%20', '%', '/'];
+            $rplc =['-', '-'];
 
             $replacedProductName = str_replace($str,$rplc,strtolower($replacedProduct));
 
@@ -185,7 +184,6 @@ class EmailService
             $data->set('subject', $replaceHtmlCustomSubject);
         }
         try {
-//            dd($data);
             $data->set('recipients', [$email => 'bhavika@icreativetechnologies.com']);
             $data->set('salesChannelId', $salesChannelId);
             $this->mailService->send($data->all(), $context);
