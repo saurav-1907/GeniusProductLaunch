@@ -1,2 +1,2 @@
-import './module/search-wizzy';
+import './module/product-launch';
 import './module/genius-product-launch-configuration';

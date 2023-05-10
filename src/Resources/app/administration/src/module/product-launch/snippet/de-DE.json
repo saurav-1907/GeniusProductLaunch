@@ -1,0 +1,11 @@
+{
+    "product-launch": {
+        "general": {
+            "mainMenuItemGeneral": "Produkteinführung"
+        },
+        "list": {
+            "importProductBtnTitle": "Importproducten Lancering",
+            "ProductImportCronBtnLabel": "Productlancering Cron"
+        }
+    }
+}
