@@ -77,54 +77,53 @@ class ReleaseProductSentMailController extends AbstractController
         $displayPrice = 0;
         if ($products) {
             foreach ($subscriberCustomers as $subscriberCustomer) {
-               $customerIds[] = $subscriberCustomer->getId();
-               $customerData = $this->getCustomerGroupForPrice($subscriberCustomer, $context);
-               foreach ($customerData as $data) {
-                   $displayPrice = $data->getGroup()->getDisplayGross();
-               }
-               $salesChannelId = $subscriberCustomer->getSalesChannelId();
-               $salesChannelNames = $this->getSalesChannelName($salesChannelId, $context);
-               $salesChannelName = '';
-               foreach ($salesChannelNames as $salesChannelName) {
-                   $salesChannelName = $salesChannelName->getName();
-               }
-               $releaseProductDetails = array();
-               $releaseProductDetails['salesChannelId'] = $subscriberCustomer->getSalesChannelId();
-               $releaseProductDetails['salesChannelName'] = $salesChannelName;
-               $releaseProductDetails['firstName'] = $subscriberCustomer->getFirstName();
-               $releaseProductDetails['lastName'] = $subscriberCustomer->getLastName();
-               $releaseProductDetails['email'] = $subscriberCustomer->getEmail();
-               $releaseProductDetails['displayPrice'] = $displayPrice;
-               $releaseProductInfoData[] = $releaseProductDetails;
-           }
-            foreach ($releaseProductInfoData as $email) {
-               foreach ($products as $product) {
-                $productId = $product->getId();
-               }
-               $checkLog = $this->checkEntryExistOrNot($productId, $context);
-               $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
-               $uniquecustomerIds = array_unique($customerIds);
-               $this->emailService->sendEmail($email, $products, Context::createDefaultContext());
-               $this->releaseProductRepository->upsert([
-                   [
-                       'id' => $id,
-                       'productId' => $productId,
-                       'value' => $uniquecustomerIds,
-                       'lastUsageAt'=> date("Y-m-d"),
-                   ]
-               ], $context);
-           }
-           dump("hello");
-           return new JsonResponse([
-               'type' => 'success',
-               'message' => 'Mail is sent'
-           ]);
-       } else{
-           return new JsonResponse([
-               'type' => 'success',
-               'message' => 'No Product Launch'
-           ]);
-       }
+                $customerIds[] = $subscriberCustomer->getId();
+                $customerData = $this->getCustomerGroupForPrice($subscriberCustomer, $context);
+                foreach ($customerData as $data) {
+                    $displayPrice = $data->getGroup()->getDisplayGross();
+                }
+                $salesChannelId = $subscriberCustomer->getSalesChannelId();
+                $salesChannelNames = $this->getSalesChannelName($salesChannelId, $context);
+                $salesChannelName = '';
+                foreach ($salesChannelNames as $salesChannelName) {
+                    $salesChannelName = $salesChannelName->getName();
+                }
+                $releaseProductDetails = array();
+                $releaseProductDetails['salesChannelId'] = $subscriberCustomer->getSalesChannelId();
+                $releaseProductDetails['salesChannelName'] = $salesChannelName;
+                $releaseProductDetails['firstName'] = $subscriberCustomer->getFirstName();
+                $releaseProductDetails['lastName'] = $subscriberCustomer->getLastName();
+                $releaseProductDetails['email'] = $subscriberCustomer->getEmail();
+                $releaseProductDetails['displayPrice'] = $displayPrice;
+                $releaseProductInfoData[] = $releaseProductDetails;
+            }
+             foreach ($releaseProductInfoData as $email) {
+                foreach ($products as $product) {
+                 $productId = $product->getId();
+                }
+                $checkLog = $this->checkEntryExistOrNot($productId, $context);
+                $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
+                $uniquecustomerIds = array_unique($customerIds);
+                $this->emailService->sendEmail($email, $products, Context::createDefaultContext());
+                $this->releaseProductRepository->upsert([
+                    [
+                        'id' => $id,
+                        'productId' => $productId,
+                        'value' => $uniquecustomerIds,
+                        'lastUsageAt'=> date("Y-m-d"),
+                    ]
+                ], $context);
+            }
+            return new JsonResponse([
+                'type' => 'success',
+                'message' => 'Mail is sent'
+            ]);
+        } else {
+            return new JsonResponse([
+                'type' => 'success',
+                'message' => 'No Product Launch'
+            ]);
+        }
     }
     private function getSubscribeCustomers($context):array
     {

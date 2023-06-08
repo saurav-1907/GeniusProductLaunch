@@ -115,7 +115,6 @@ class EmailService
                 } else {
                     $productManufacturer = $this->getVariantProductName($parentId, $context)->getManufacturer()->getMedia()->getUrl();
                 }
-
             } else {
                 $productName = $productData->getName();
                 $productNumber = $productData->getProductNumber();
@@ -162,21 +161,20 @@ class EmailService
                 $productPriceArray = '<span style="color: #f4d13a;">'.$currencySymbol. $productPricedecimal .'*</span>'.'<del>'.$currencySymbol.$productListPrices.'*'.'</del>';
             } else {
                 $productPricedecimal = number_format($productPrices, 2 );
-                $productPriceArray = $currencySymbol.''. $productPricedecimal.'*' ;
+                $productPriceArray = $currencySymbol.''.$productPricedecimal.'*';
             }
 
             foreach ($mediaData as $media) {
                 $mediaUrl = $media->getMedia()->getUrl();
             }
-            $replacedProduct = str_replace(str_split(
-                '\\/:*?"<>|+-% '), '-', $productName);
+            $replacedProduct = str_replace(str_split('\\/:*?"<>|+-% '), '-', $productName);
 
-            $str = ['--','% ','%20','%','/'];
-            $rplc =['-','-'];
+            $str = ['--', '% ', '%20', '%', '/'];
+            $rplc =['-', '-'];
 
             $replacedProductName = str_replace($str,$rplc,strtolower($replacedProduct));
 
-            $productURL = $_ENV['APP_URL'] . '/' . $replacedProductName. '/'. $productNumber;
+            $productURL = $_ENV['APP_URL'] .'/'.$replacedProductName.'/'.$productNumber;
             $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);
             $replacedcoverUrl = str_replace(' ', '%20', $coverData);
             $replacedManufacturerUrl = str_replace(' ', '%20', $productManufacturer);
@@ -185,7 +183,7 @@ class EmailService
                 <div class="card"  >
                     <div class="card-body" style="padding: 1rem;     position: relative;">
                             <img src='.$replacedcoverUrl.' alt='.$productName.' style="width:200px; margin:0 auto; display: block; height: 130px; object-fit: contain;">
-                              <img src='.$replacedManufacturerUrl.' alt='.$productName.' style="width:58px; margin:2px auto; display: block; height: 30px; object-fit: contain;">
+                              <img src='.$replacedManufacturerUrl.' alt='.  $productName.' style="width:58px; margin:2px auto; display: block; height: 30px; object-fit: contain;">
                             <div class="product-price-info" style=" background: #558394; width: 70px;height: 70px; line-height: 70px; border-radius: 50%; font-size: 11px; position: absolute; top: 18px;color: #fff; text-align: center; font-weight: 600;">
                                 <span>'.$productPriceArray.'</span>
                             </div>
