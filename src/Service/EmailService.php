@@ -160,7 +160,7 @@ class EmailService
                 $productPricedecimal = number_format($productPrices, 2);
                 $productPriceArray = '<span style="color: #f4d13a;">'.$currencySymbol. $productPricedecimal .'*</span>'.'<del>'.$currencySymbol.$productListPrices.'*'.'</del>';
             } else {
-                $productPricedecimal = number_format($productPrices, 2 );
+                $productPricedecimal = number_format($productPrices, 2);
                 $productPriceArray = $currencySymbol.''.$productPricedecimal.'*';
             }
 
@@ -172,7 +172,7 @@ class EmailService
             $str = ['--', '% ', '%20', '%', '/'];
             $rplc =['-', '-'];
 
-            $replacedProductName = str_replace($str,$rplc,strtolower($replacedProduct));
+            $replacedProductName = str_replace($str, $rplc, strtolower($replacedProduct));
 
             $productURL = $_ENV['APP_URL'] .'/'.$replacedProductName.'/'.$productNumber;
             $replacedmediaUrl = str_replace(' ', '%20', $mediaUrl);

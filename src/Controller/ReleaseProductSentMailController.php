@@ -97,9 +97,9 @@ class ReleaseProductSentMailController extends AbstractController
                 $releaseProductDetails['displayPrice'] = $displayPrice;
                 $releaseProductInfoData[] = $releaseProductDetails;
             }
-             foreach ($releaseProductInfoData as $email) {
+              foreach ($releaseProductInfoData as $email) {
                 foreach ($products as $product) {
-                 $productId = $product->getId();
+                  $productId = $product->getId();
                 }
                 $checkLog = $this->checkEntryExistOrNot($productId, $context);
                 $id = $checkLog->getTotal() == 0 ? Uuid::randomHex():$checkLog->first()->getId();
@@ -113,7 +113,7 @@ class ReleaseProductSentMailController extends AbstractController
                         'lastUsageAt'=> date("Y-m-d"),
                     ]
                 ], $context);
-            }
+             }
             return new JsonResponse([
                 'type' => 'success',
                 'message' => 'Mail is sent'
