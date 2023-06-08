@@ -113,7 +113,7 @@ class ReleaseProductSentMailController extends AbstractController
                         'lastUsageAt'=> date("Y-m-d"),
                     ]
                 ], $context);
-              }
+            }
             return new JsonResponse([
                 'type' => 'success',
                 'message' => 'Mail is sent'
