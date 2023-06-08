@@ -9,7 +9,7 @@ Shopware.Module.register('genius-product-launch-configuration', {
     name: 'Genius Product Launch Configuration',
     title: 'genius-product-launch-configuration.general.mainMenuItemGeneral',
     description: 'genius-product-launch-configuration.general.descriptionTextModule',
-    color: '#ff3d58',
+    color: '#121f36',
     icon: 'default-action-settings',
 
     snippets: {

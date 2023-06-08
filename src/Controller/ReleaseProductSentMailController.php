@@ -63,7 +63,7 @@ class ReleaseProductSentMailController extends AbstractController
     }
 
     /**
-     * @Route("/api/search-wizzy/releaseProduct",
+     * @Route("/api/product-launch/releaseProduct",
      *     name="api.action.search.wizzy.release.product.cron", methods={"GET"})
      * @param Context $context
      * @return JsonResponse
@@ -134,15 +134,35 @@ class ReleaseProductSentMailController extends AbstractController
     }
     private function getAllProduct($context): array
     {
-        $criteria = new Criteria();
-        $criteria->addAssociation('media');
-        $criteria->addFilter(new EqualsFilter('active', true));
-        $criteria->addFilter(new ContainsFilter('releaseDate', date("Y-m-d")));
-        return $this->productsRepository->search($criteria, $context)->getElements();
+        $productCriteria = new Criteria();
+        $productCriteria->addAssociation('cover');
+        $productCriteria->addAssociation('manufacturer');
+        $productCriteria->addAssociation('children');
+        $productCriteria->addAssociation('media');
+        $productCriteria->addAssociation('children.categories');
+        $productCriteria->addAssociation('children.options');
+        $productCriteria->addAssociation('children.cover');
+        $productCriteria->addAssociation('children.translations');
+        $productCriteria->addAssociation('children.translations.language.locale');
+        $productCriteria->addAssociation('children.manufacturer');
+        $productCriteria->addAssociation('children.manufacturer.media');
+        $productCriteria->addAssociation('children.media');
+        $productCriteria->addAssociation('children.media');
+        $productCriteria->addAssociation('productReviews');
+        $productCriteria->addAssociation('visibilities');
+        $productCriteria->addAssociation('translations');
+        $productCriteria->addAssociation('translations.language');
+        $productCriteria->addAssociation('customFields');
+        $productCriteria->addAssociation('translations.language.locale');
+        $productCriteria->addAssociation('manufacturer.media');
+        $productCriteria->addFilter(new EqualsFilter('active', true));
+        $productCriteria->addFilter(new ContainsFilter('releaseDate', date("Y-m-d")));
+        return $this->productsRepository->search($productCriteria, $context)->getElements();
     }
     private function getSalesChannelName($salesChannelId, Context $context)
     {
         $criteria = new Criteria();
+        $criteria->addAssociation('currency');
         $criteria->addFilter(new EqualsFilter('id', $salesChannelId));
         return $this->salesChannelRepository->search($criteria, $context)->getElements();
     }

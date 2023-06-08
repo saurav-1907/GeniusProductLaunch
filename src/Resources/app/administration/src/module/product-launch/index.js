@@ -1,16 +1,16 @@
-import './page/search-wizzy-list';
+import './page/product-launch-list';
 
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
 
 const { Module } = Shopware;
 
-Module.register('search-wizzy', {
+Module.register('product-launch', {
     type: 'plugin',
-    name: 'search-wizzy.general.mainMenuItemGeneral',
-    title: 'search-wizzy.general.mainMenuItemGeneral',
-    description: 'search-wizzy.general.descriptionTextModule',
-    color: '#ff3d58',
+    name: 'product-launch.general.mainMenuItemGeneral',
+    title: 'product-launch.general.mainMenuItemGeneral',
+    description: 'product-launch.general.descriptionTextModule',
+    color: '#0b1628',
     icon: 'default-action-cloud-download',
 
     snippets: {
@@ -20,15 +20,15 @@ Module.register('search-wizzy', {
 
     routes: {
         list: {
-            component: 'search-wizzy-list',
+            component: 'product-launch-list',
             path: 'list'
         }
     },
 
     navigation: [{
-        label: 'search-wizzy.general.mainMenuItemGeneral',
-        color: '#ff3d58',
-        path: 'search.wizzy.list',
+        label: 'product-launch.general.mainMenuItemGeneral',
+        color: '#121f36',
+        path: 'product.launch.list',
         parent: 'sw-catalogue',
         icon: 'default-shopping-paper-bag-product',
         position: 100

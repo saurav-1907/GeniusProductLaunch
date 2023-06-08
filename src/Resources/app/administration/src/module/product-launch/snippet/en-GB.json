@@ -1,0 +1,11 @@
+{
+    "product-launch": {
+        "general": {
+            "mainMenuItemGeneral": "Genius Product Launch"
+        },
+        "list": {
+            "importProductBtnTitle": "Import Products Launch",
+            "ProductImportCronBtnLabel": "Product Launch Cron"
+        }
+    }
+}

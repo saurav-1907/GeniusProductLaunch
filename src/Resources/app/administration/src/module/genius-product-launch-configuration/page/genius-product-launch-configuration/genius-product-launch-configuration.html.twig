@@ -75,15 +75,6 @@
                                                                             :customInheritationCheckFunction="checkTextFieldInheritance"
                                                                             :label="$tc('genius-product-launch-configuration.card.mailTemplate')">
                                                             <template #content="props">
-{#                                                                <sw-single-select name="productLaunch.settings.mailTemplate"#}
-{#                                                                                  :options="mailTemplateOptions"#}
-{#                                                                                  labelProperty="name"#}
-{#                                                                                  valueProperty="name"#}
-{#                                                                                  :isInherited="props.isInherited"#}
-{#                                                                                  :value="props.currentValue"#}
-{#                                                                                  @change="props.updateCurrentValue"#}
-{#                                                                                  :disabled="props.isInherited || !acl.can('productLaunch.editor')">#}
-{#                                                                </sw-single-select>#}
 
                                                                 <sw-single-select
                                                                     :options="mailTemplateOptions"
